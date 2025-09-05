@@ -21,4 +21,15 @@ PHASE 2:
 
 
 
-/opt/brew/opt/kafka/bin/kafka-server-start /opt/brew/etc/kafka/server.properties
+airflow setup:
+- configure home to be in project
+- set dags folder
+- run airflow scheduler, then UI
+
+docker run -d \
+  --name my_postgres \
+  -e POSTGRES_USER=luis \  
+  -e POSTGRES_PASSWORD=devpassword \
+  -e POSTGRES_DB=bitcoinpipeline \
+  -p 5432:5432 \
+  postgres:16

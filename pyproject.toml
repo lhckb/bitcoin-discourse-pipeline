@@ -5,8 +5,10 @@ description = "Add your description here"
 readme = "README.md"
 requires-python = ">=3.13"
 dependencies = [
-    "kafka-python>=2.2.15",
+    "graphviz>=0.21",
+    "polars>=1.32.3",
     "praw>=7.8.1",
+    "psycopg2-binary>=2.9.10",
     "python-dotenv>=1.1.1",
     "rich>=14.1.0",
 ]
