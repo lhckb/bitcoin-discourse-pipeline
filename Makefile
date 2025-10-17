@@ -1,5 +1,5 @@
-read:
-	uv run python -m steps.read_reddit
+main:
+	uv run python main.py
 
-clean:
-	uv run python -m steps.clean_reddit_data
+devdb:
+	psql -h 0.0.0.0 -U luis -d bitcoinpipeline

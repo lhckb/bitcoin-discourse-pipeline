@@ -1,22 +1,28 @@
-from steps.read_reddit import RedditReader
-from time import time
+from steps.reddit_bronze import RedditBronze
+from steps.reddit_silver import RedditSilver
 from utils.logging_init import setup_logging
+from common.db import PGSQLConnector
 
 logger = setup_logging()
 
-def read_reddit():
-    reader = RedditReader()
-
-    query_start_time_utc = time()
-
-    results = reader.query_reddit_for_discourse(query_start_time_utc)
-    
-    query_time_delta = time() - query_start_time_utc
-    logger.info(f"Query ended in {query_time_delta} seconds")
-
-    logger.info(f"Query produced {len(results)} results")
-
-    return results
-
 if __name__ == "__main__":
-    results = read_reddit()
+
+    bronze = RedditBronze()
+    bronze_results = bronze.query_reddit_for_discourse()
+    bronze.insert_into_bronze_table(bronze_results)
+
+    silver = RedditSilver(bronze_results)
+    silver.explode_comments()
+    silver.add_metadata_round_one()
+    silver.remove_dupes()
+    silver.handle_missing()
+    silver.normalize_text()
+    silver.add_metadata_round_two()
+    silver.convert_unix_to_timestamp()
+    silver.insert_into_silver_tables(silver.posts_df, silver.comments_df)
+
+    connector = PGSQLConnector()
+    results = connector.select("""
+        SELECT * FROM silver_posts;
+    """)
+    print(results)

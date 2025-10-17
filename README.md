@@ -33,3 +33,45 @@ docker run -d \
   -e POSTGRES_DB=bitcoinpipeline \
   -p 5432:5432 \
   postgres:16
+
+1: created object to represent data acuqired from PRAW. this is the bronze layer. created pgsql table representing this dat. bronze is raw ingestion, no cleaning
+
+2: silver layer will clean data up, explode comments array into own table, remove dupes, standardize text data...
+
+🔹 What to do now in Silver
+
+Structural normalization
+
+Explode comments into a separate table if not done.
+
+Flatten any nested fields.
+
+Convert timestamps to a standard format or float if needed.
+
+Basic text cleaning / normalization
+
+Lowercase text.
+
+Strip extra whitespace.
+
+Remove markdown artifacts, URLs, HTML entities.
+
+Optionally remove emojis if they interfere with analysis.
+
+Add derived metadata (optional, but common)
+
+Word count, character count.
+
+Number of links, hashtags, mentions.
+
+Comment depth, parent post ID, subreddit, etc.
+
+🔹 What to hold off until Gold
+
+Stopword removal, stemming/lemmatization, vectorization, embeddings → These are domain/model-specific and usually applied at Gold.
+
+Aggregations or business metrics → Keep Silver as “cleaned atomic data,” not yet processed for analysis.
+
+TODO:
+- add more info like upvote counts from bronze
+- add try catches, throw errors
